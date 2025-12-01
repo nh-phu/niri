@@ -880,9 +880,14 @@ impl<W: LayoutElement> ScrollingSpace<W> {
         mut is_full_width: bool,
         anim_config: Option<niri_config::Animation>,
     ) {
-        if self.columns.is_empty() && self.options.layout.always_maximized_single_column {
+        let width = if self.columns.is_empty() && self.options.layout.always_maximized_single_column
+        {
             is_full_width = true;
-        }
+            ColumnWidth::Proportion(1.0)
+        } else {
+            width
+        };
+
         let column = Column::new_with_tile(
             tile,
             self.view_size,
@@ -996,11 +1001,11 @@ impl<W: LayoutElement> ScrollingSpace<W> {
         self.data.insert(idx, ColumnData::new(&column));
         self.columns.insert(idx, column);
 
-        let always_maximized_single_column = !was_empty
+        let enable_maximized_single_column = !was_empty
             && self.options.layout.always_maximized_single_column
             && self.columns.len() == 2;
 
-        if always_maximized_single_column {
+        if enable_maximized_single_column {
             let existing_col_idx = if idx == 0 { 1 } else { 0 };
             let existing_col = &mut self.columns[existing_col_idx];
 
