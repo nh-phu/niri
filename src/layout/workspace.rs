@@ -886,6 +886,9 @@ impl<W: LayoutElement> Workspace<W> {
         window: &W,
         width: Option<PresetSize>,
     ) -> ColumnWidth {
+        if self.scrolling.is_maximizing_single_column() {
+            return ColumnWidth::Proportion(1.0);
+        }
         let width = width.unwrap_or_else(|| PresetSize::Fixed(window.size().w));
         match width {
             PresetSize::Fixed(fixed) => {

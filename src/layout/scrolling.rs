@@ -543,7 +543,7 @@ impl<W: LayoutElement> ScrollingSpace<W> {
     }
 
     pub fn is_maximizing_single_column(&self) -> bool {
-        self.options.layout.always_maximized_single_column && self.columns.len() <= 1
+        self.options.layout.always_maximized_single_column && self.columns.is_empty()
     }
 
     fn compute_new_view_offset_fit(
@@ -880,12 +880,8 @@ impl<W: LayoutElement> ScrollingSpace<W> {
         mut is_full_width: bool,
         anim_config: Option<niri_config::Animation>,
     ) {
-        let width = if self.columns.is_empty() && self.options.layout.always_maximized_single_column
-        {
+        if self.columns.is_empty() && self.options.layout.always_maximized_single_column {
             is_full_width = true;
-            ColumnWidth::Proportion(1.0)
-        } else {
-            width
         };
 
         let column = Column::new_with_tile(
